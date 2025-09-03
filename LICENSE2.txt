@@ -1,0 +1,10 @@
+This project includes components from TensorFlow.js, which are licensed under the Apache License 2.0:
+
+- @tensorflow/tfjs-core
+- @tensorflow/tfjs-converter
+- @tensorflow/tfjs-backend-webgl
+- @tensorflow-models/face-landmarks-detection
+
+© Google LLC. All rights reserved.
+
+For more information, see https://www.apache.org/licenses/LICENSE-2.0

@@ -1,0 +1,82 @@
+<html>
+    <head>
+        <title>Face Mesh Implementation</title>
+    </head>
+
+    <body>
+        <style>
+
+        #container {
+            position: relative;
+            width: 820px;
+            height: 700px;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 820px;
+            height: 700px;
+            display: block;
+        }
+
+        #canvas {
+            z-index: 1;
+        }
+
+        #effectsCanvas {
+            z-index: 2; 
+        }
+
+        #video {
+            visibility: hidden;
+            -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+        }
+
+        #buttons {
+            margin-top: 10px;
+            width: 820px;
+            display: flex;
+            justify-content: flex-start; 
+            gap: 20px;
+            color: antiquewhite;
+        }
+
+        #buttons button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0e3f84;
+            color: white;
+            border: none;
+            border-radius: 6px;
+        }
+
+        </style>
+
+        <div id="container">
+                <canvas id="canvas"></canvas>
+                <canvas id="effectsCanvas"></canvas>
+        <video id="video" autoplay width="700" height="800"></video>
+        </div>
+
+        <div id ="buttons">
+            <button onclick="nextFilter()">Next Filter</button>
+            <button onclick="nextColour()">Change lip Colour</button>
+            <button onclick="orginalColour()">Restore original lip Colour</button>
+            <button onclick="clearCanvas()">Clear Canvas</button>
+            
+        </div>
+
+    </body>
+    <img id="crown" src="Images/Crown.png" alt="Crown" style="display: none;">
+    <script src="https://unpkg.com/@tensorflow/tfjs-core@2.4.0/dist/tf-core.js"></script>
+    <script src="https://unpkg.com/@tensorflow/tfjs-converter@2.4.0/dist/tf-converter.js"></script>
+    <script src="https://unpkg.com/@tensorflow/tfjs-backend-webgl@2.4.0/dist/tf-backend-webgl.js"></script>
+    <script src="https://unpkg.com/@tensorflow-models/face-landmarks-detection@0.0.1/dist/face-landmarks-detection.js"></script>
+    <script src="mesh.js" defer></script>
+
+</html>
