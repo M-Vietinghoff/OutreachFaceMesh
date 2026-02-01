@@ -1,3 +1,4 @@
+//intialize needed variables
 const video = document.getElementById("video");
 const effectsCanvas = document.getElementById("effectsCanvas");
 let ctx,effectsCtx;
@@ -7,6 +8,7 @@ let openColour = 'rgba(141, 0, 57, 0.5)';
 let filter = 0;
 let lastFilter = 3;
 
+//open and size camera
 async function setupCamera() {
     const stream = await navigator.mediaDevices.getUserMedia({video: true});
     video.srcObject = stream;
@@ -21,6 +23,7 @@ async function setupCamera() {
     });
 }
 
+//create and size canvas
 async function setupCanvas() {
 
     canvas.width = videoWidth;
@@ -39,6 +42,7 @@ async function setupCanvas() {
     ctx.fillStyle = "green";
 }
 
+//detect all tracked points location on the face
 async function loadFaceLandmarkDetectionModel() {
     return faceLandmarksDetection
                 .load(faceLandmarksDetection.SupportedPackages.mediapipeFacemesh,
@@ -58,7 +62,8 @@ async function renderPrediction() {
     
     if (filter == 0){
 
-        //start filters
+    //start filter 1
+    //filter 1 colors in the lips of the face and changes colors when the mouth is open
     if (predictions.length > 0) {
     predictions.forEach(prediction => {
         const keypoints = prediction.scaledMesh;
@@ -117,6 +122,7 @@ async function renderPrediction() {
         //find vertical axis
         centerY = (keypoints[14][1] + keypoints[87][1]) / 2;
 
+        //add a gradient to the lip
         const gradient = ctx.createLinearGradient(leftX, centerY, rightX, centerY);
         gradient.addColorStop(0, "rgba(255, 153, 204, 0.5)");
         gradient.addColorStop(1, "rgba(0, 153, 204, 0.5)");
@@ -130,6 +136,8 @@ async function renderPrediction() {
 
             });
         }
+    //start filter 2
+    //filter 2 positions an image of crown on the forehead
     } else if (filter == 1){
     if (predictions.length > 0) {
     predictions.forEach(prediction => {
@@ -149,10 +157,12 @@ async function renderPrediction() {
 
         });
     }
- 
+
+    //start filter 3
+    //filter 3 shows what points on the face are beign tracked by drawing a point on each location
     } else if (filter == 2) {
 
-    //Generating points for landmarks on the face
+    //Generating points for landmarks 
     if(predictions.length > 0) {
         predictions.forEach(prediction => {
             const keypoints = prediction.scaledMesh;
@@ -167,6 +177,8 @@ async function renderPrediction() {
             }
         });
     }
+    //start filter 4
+    //filter 4 draws points on the screen when someone opens theire mouth. Point will be assigned a color randomly.
     } else  if (filter == 3){
         if(predictions.length > 0) {
         predictions.forEach(prediction => {
@@ -177,9 +189,11 @@ async function renderPrediction() {
             let threshold = 4.0;
             let x = lipTop[0]; 
             let y = lipTop[1]; 
+            
+            //determine colour of point
             let colourState = (Math.random() * 50);
 
-            //If mouth is open, draw purple circle
+            //if mouth is open, draw circle
             if ((lipBottom[1] - lipTop[1]) > threshold) {
                 effectsCtx.beginPath();
                 effectsCtx.arc(x, y, 2, 0, 2 * Math.PI);
@@ -191,20 +205,19 @@ async function renderPrediction() {
                 
                 effectsCtx.fill();
             } else {
-                //Do Nothing
+                //Do nothing because mouth is not open
             }
-
         });
     }
     } else {
         //Error
     }
-    
-    //end filters
+    //end of filters
 
     window.requestAnimationFrame(renderPrediction);
 }
 
+//start the setup of the program
 async function main() {
     //Set up camera
     await setupCamera();
@@ -221,7 +234,7 @@ async function main() {
 
 function nextFilter(){
 
-    //If at the last filter, return to first. This forms a loop thats looping through filters as the button is pressed.
+    //If at the last filter, return to first. This forms a loop thats scrolls through filters each time the button is pressed.
     if (filter == lastFilter){
         filter = 0;
     } else {
@@ -230,6 +243,8 @@ function nextFilter(){
     }
 
 }
+
+//Generate new lip colors randomly for filter 1 
 function nextColour(){
     let r = Math.floor(Math.random() * 256);
     let b = Math.floor(Math.random() * 256);
@@ -241,14 +256,15 @@ function nextColour(){
     closedColour = `rgba(${r}, ${g}, ${b}, 0.5)`;
 }
 
+//return to the default lip colors for filter 1
 function orginalColour(){
     closedColour = 'rgba(255,153,204,0.5)';
     openColour = 'rgba(141, 0, 57, 0.5)';
 
 }
 
+//reset the canvas
 function clearCanvas(){
-
     effectsCtx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
